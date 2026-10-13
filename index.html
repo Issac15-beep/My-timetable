@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>My Weekly Timetable</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Figtree:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f3f5f1;
+        --surface: #ffffff;
+        --ink: #16221b;
+        --muted: #59685f;
+        --line: #dce3dc;
+        --brand: #14633f;
+        --on-brand: #fff;
+        --soft: #e1efe6;
+        --read: #2f6fde;
+        --code: #7a4fd6;
+        --film: #d6407a;
+        --chess: #c98a00;
+        --dev: #12906a;
+        --church: #0e8ca8;
+        --class: #5b6b7c;
+        --meal: #9a8c6b;
+        --rest: #94a19a;
+        --travel: #7f8c99;
+        --sleep: #3b4a6b;
+        --f-head: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+        --f-body: "Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg: #0e1713;
+          --surface: #16231c;
+          --ink: #e8f0ea;
+          --muted: #9db0a4;
+          --line: #27382e;
+          --brand: #4fd18c;
+          --on-brand: #0e1713;
+          --soft: #1d3a2b;
+          --read: #6c9bff;
+          --code: #a98bff;
+          --film: #ff7baa;
+          --chess: #f2bb38;
+          --dev: #3fcfa3;
+          --church: #4cc6e0;
+          --class: #9aabbd;
+          --meal: #c2b48f;
+          --rest: #7f8f86;
+          --travel: #9aa8b5;
+          --sleep: #7f93c2;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg: #0e1713;
+        --surface: #16231c;
+        --ink: #e8f0ea;
+        --muted: #9db0a4;
+        --line: #27382e;
+        --brand: #4fd18c;
+        --on-brand: #0e1713;
+        --soft: #1d3a2b;
+        --read: #6c9bff;
+        --code: #a98bff;
+        --film: #ff7baa;
+        --chess: #f2bb38;
+        --dev: #3fcfa3;
+        --church: #4cc6e0;
+        --class: #9aabbd;
+        --meal: #c2b48f;
+        --rest: #7f8f86;
+        --travel: #9aa8b5;
+        --sleep: #7f93c2;
+      }
+      :root {
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      html {
+        scroll-padding-top: env(safe-area-inset-top, 0px);
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: inherit;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font: 16px/1.5 var(--f-body);
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: var(--f-head);
+        line-height: 1.15;
+        margin: 0 0 0.4em;
+        letter-spacing: -0.01em;
+      }
+      h1 {
+        font-size: clamp(1.7rem, 5vw, 2.4rem);
+      }
+      h2 {
+        font-size: 1.35rem;
+      }
+      h3 {
+        font-size: 1.05rem;
+      }
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 26px 16px 70px;
+      }
+      .sub {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .lead {
+        color: var(--muted);
+        margin: 0.2em 0 18px;
+        max-width: 60ch;
+      }
+      :focus-visible {
+        outline: 3px solid var(--brand);
+        outline-offset: 2px;
+        border-radius: 8px;
+      }
+      .tabs {
+        display: flex;
+        gap: 6px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        padding: 5px;
+        border-radius: 14px;
+        margin-bottom: 16px;
+      }
+      .tab {
+        flex: 1;
+        font: inherit;
+        font-weight: 700;
+        padding: 10px 8px;
+        border: 0;
+        border-radius: 10px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+      }
+      .tab.on {
+        background: var(--brand);
+        color: var(--on-brand);
+      }
+      .days {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        margin-bottom: 14px;
+      }
+      .dp {
+        font: inherit;
+        font-weight: 650;
+        min-width: 56px;
+        padding: 8px 12px;
+        border-radius: 99px;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        color: var(--ink);
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .dp.on {
+        background: var(--ink);
+        color: var(--bg);
+        border-color: var(--ink);
+      }
+      .dp .t {
+        display: block;
+        font-size: 0.66rem;
+        font-weight: 600;
+        opacity: 0.75;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px 18px;
+        margin-bottom: 14px;
+      }
+      .chips {
+        display: flex;
+        gap: 7px;
+        flex-wrap: wrap;
+        margin: 6px 0 16px;
+      }
+      .chip {
+        display: inline-flex;
+        gap: 6px;
+        align-items: center;
+        font-size: 0.82rem;
+        font-weight: 650;
+        padding: 5px 11px;
+        border-radius: 99px;
+        border: 1px solid var(--line);
+        background: var(--surface);
+      }
+      .chip i {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--c);
+      }
+      .rows {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .row {
+        --c: var(--rest);
+        display: grid;
+        grid-template-columns: 96px 1fr;
+        gap: 12px;
+        align-items: stretch;
+        background: color-mix(in srgb, var(--c) 11%, var(--surface));
+        border: 1px solid var(--line);
+        border-left: 5px solid var(--c);
+        border-radius: 10px;
+        padding: 9px 12px;
+      }
+      .row.small {
+        padding: 5px 12px;
+        opacity: 0.9;
+      }
+      .tm {
+        font-weight: 700;
+        font-size: 0.86rem;
+        line-height: 1.25;
+      }
+      .tm span {
+        display: block;
+        color: var(--muted);
+        font-weight: 500;
+        font-size: 0.78rem;
+      }
+      .lb {
+        font-weight: 650;
+      }
+      .lb small {
+        display: block;
+        font-weight: 500;
+        color: var(--muted);
+        font-size: 0.84rem;
+      }
+      .row.sleep {
+        opacity: 0.8;
+      }
+      .cat-read {
+        --c: var(--read);
+      }
+      .cat-code {
+        --c: var(--code);
+      }
+      .cat-film {
+        --c: var(--film);
+      }
+      .cat-chess {
+        --c: var(--chess);
+      }
+      .cat-dev {
+        --c: var(--dev);
+      }
+      .cat-church {
+        --c: var(--church);
+      }
+      .cat-class {
+        --c: var(--class);
+      }
+      .cat-meal {
+        --c: var(--meal);
+      }
+      .cat-rest {
+        --c: var(--rest);
+      }
+      .cat-travel {
+        --c: var(--travel);
+      }
+      .cat-sleep {
+        --c: var(--sleep);
+      }
+      .swap {
+        display: grid;
+        gap: 10px;
+      }
+      .swap .it {
+        border-top: 1px solid var(--line);
+        padding-top: 10px;
+      }
+      .swap .it:first-of-type {
+        border-top: 0;
+        padding-top: 0;
+      }
+      .swap b {
+        display: block;
+      }
+      .arrow {
+        color: var(--muted);
+        font-size: 0.86rem;
+      }
+      ul.rules {
+        margin: 6px 0 0;
+        padding-left: 1.2em;
+      }
+      ul.rules li {
+        margin: 5px 0;
+      }
+      .warn {
+        border-left: 5px solid var(--chess);
+      }
+      .sleepnote {
+        font-size: 0.86rem;
+        color: var(--muted);
+        margin: 10px 2px 0;
+      }
+      @media (max-width: 480px) {
+        .row {
+          grid-template-columns: 82px 1fr;
+          gap: 9px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>My weekly timetable</h1>
+      <p class="lead">
+        Classes, church, devotion, reading, coding, film and chess in one plan.
+      </p>
+      <div id="app"></div>
+    </main>
+    <script>
+      const CAT = {
+        read: ["Reading", "read"],
+        code: ["Coding", "code"],
+        film: ["Film", "film"],
+        chess: ["Chess", "chess"],
+        dev: ["Devotion", "dev"],
+        church: ["Church", "church"],
+        class: ["Classes", "class"],
+      };
+      const R = (s) =>
+        s
+          .trim()
+          .split("\n")
+          .map((l) => {
+            const p = l.split("|");
+            return { s: p[0], e: p[1], l: p[2], c: p[3], n: p[4] || "" };
+          });
+      const REC = "Last 10 to 15 min: active recall in NotebookLM";
+      const DAYS = {
+        Mon: {
+          name: "Monday",
+          tag: "No classes, church 6pm",
+          rows: R(`
+05:30|05:45|Wake up and freshen up|rest
+05:45|06:30|Reading 1 (morning)|read|${REC}
+06:30|07:10|Morning devotion|dev
+07:10|07:40|Breakfast|meal
+07:40|09:10|Reading 2 (morning)|read|${REC}
+09:10|09:20|Short break|rest
+09:20|10:05|Reading 3 (morning)|read|${REC}
+10:05|10:15|Short break|rest
+10:15|11:45|Coding 1|code
+11:45|12:25|Chess|chess
+12:25|13:05|Lunch|meal
+13:05|14:05|Reading 4 (afternoon)|read|${REC}
+14:05|14:15|Short break|rest
+14:15|15:45|Coding 2|code
+15:45|15:55|Short break|rest
+15:55|16:55|Coding 3|code
+16:55|17:15|Bath and get ready|rest
+17:15|18:00|Travel to church|travel
+18:00|20:00|Church|church
+20:00|20:30|Travel home|travel
+20:30|21:00|Dinner|meal
+21:00|21:40|Evening devotion|dev
+21:45|22:45|Film|film
+22:45|23:00|Evening reading: quick NotebookLM recall|read|Short today because church takes the evening
+23:00|05:30|Sleep|sleep`),
+        },
+        Tue: {
+          name: "Tuesday",
+          tag: "3 classes",
+          rows: R(`
+06:00|06:30|Wake up and freshen up|rest
+06:30|07:10|Morning devotion|dev
+07:10|08:00|Breakfast and get ready|meal
+08:00|09:30|Reading|read|${REC}
+09:30|10:10|Chess|chess
+10:10|10:45|Rest and get ready|rest
+10:45|11:00|Walk to class|travel
+11:00|13:00|INS 203|class|R 206 (COLPLANT 1st Floor)
+13:00|13:45|Lunch|meal
+13:45|14:00|Walk to class|travel
+14:00|16:00|BUA 201|class|GLR I (Chief Dr Olusegun Obasanjo Engineering Building)
+16:00|18:00|INS 205|class|R 205 (COLPLANT 1st Floor)
+18:00|18:30|Walk home and freshen up|travel
+18:30|19:00|Dinner|meal
+19:00|20:30|Coding|code
+20:30|21:00|Bath and rest|rest
+21:00|21:40|Evening devotion|dev
+21:45|22:45|Film|film
+22:45|23:00|Wind down|rest
+23:00|06:00|Sleep|sleep`),
+        },
+        Wed: {
+          name: "Wednesday",
+          tag: "No classes, church 4pm",
+          rows: R(`
+05:30|05:45|Wake up and freshen up|rest
+05:45|06:30|Reading 1 (morning)|read|${REC}
+06:30|07:10|Morning devotion|dev
+07:10|07:40|Breakfast|meal
+07:40|09:10|Reading 2 (morning)|read|${REC}
+09:10|09:20|Short break|rest
+09:20|10:05|Reading 3 (morning)|read|${REC}
+10:05|10:15|Short break|rest
+10:15|11:45|Coding 1|code
+11:45|12:25|Chess|chess
+12:25|13:05|Lunch|meal
+13:05|14:05|Reading 4 (afternoon)|read|${REC}
+14:05|14:15|Short break|rest
+14:15|15:15|Coding 2|code
+15:15|15:30|Get ready|rest
+15:30|16:00|Travel to church|travel
+16:00|18:00|Church|church
+18:00|18:30|Travel home|travel
+18:30|19:00|Dinner|meal
+19:00|20:30|Coding 3|code
+20:30|21:00|Evening reading|read|${REC}
+21:00|21:40|Evening devotion|dev
+21:45|22:45|Film|film
+22:45|23:00|Wind down|rest
+23:00|05:30|Sleep|sleep`),
+        },
+        Thu: {
+          name: "Thursday",
+          tag: "2 time slots, 3 classes",
+          rows: R(`
+06:00|06:30|Wake up and freshen up|rest
+06:30|07:10|Morning devotion|dev
+07:10|07:50|Breakfast|meal
+07:50|08:30|Chess|chess
+08:30|09:00|Get ready and walk to class|travel
+09:00|11:00|SEN 203 (R 205, COLPLANT 1st Floor)|class|STA 121 (SSLM LB) is at the same time. Check which one to attend.
+11:00|11:15|Short break|rest
+11:15|12:45|Reading|read|${REC}
+12:45|13:30|Lunch|meal
+13:30|15:00|Coding|code
+15:00|15:40|Rest or nap|rest
+15:40|16:00|Walk to class|travel
+16:00|18:00|COS 201|class|1K CAP this week; splits into 1K CAP and MP 01 later
+18:00|18:30|Walk home and freshen up|travel
+18:30|19:00|Dinner|meal
+19:00|20:00|Film|film
+20:00|21:00|Free time and chores|rest
+21:00|21:40|Evening devotion|dev
+21:45|23:00|Free time and wind down|rest
+23:00|06:00|Sleep|sleep`),
+        },
+        Fri: {
+          name: "Friday",
+          tag: "2 classes",
+          rows: R(`
+06:00|06:30|Wake up and freshen up|rest
+06:30|07:10|Morning devotion|dev
+07:10|07:50|Breakfast|meal
+07:50|08:30|Chess|chess
+08:30|09:00|Get ready and walk to class|travel
+09:00|11:00|ENT 211|class|ELBOG 2
+11:00|11:15|Snack and short break|meal
+11:15|12:45|Coding|code
+12:45|13:00|Walk to class|travel
+13:00|14:30|INS 207|class|A 105 (COLERM Ground Floor)
+14:30|15:15|Lunch|meal
+15:15|16:45|Reading|read|${REC}
+16:45|18:30|Free time|rest
+18:30|19:15|Dinner|meal
+19:15|20:15|Film|film
+20:15|21:00|Free time|rest
+21:00|21:40|Evening devotion|dev
+21:45|23:00|Free time and wind down|rest
+23:00|06:00|Sleep|sleep`),
+        },
+        Sat: {
+          name: "Saturday",
+          tag: "Church 1:30pm",
+          rows: R(`
+06:00|06:30|Wake up and freshen up|rest
+06:30|07:10|Morning devotion|dev
+07:10|07:50|Breakfast|meal
+07:50|09:20|Reading|read|${REC}
+09:20|09:30|Short break|rest
+09:30|11:00|Coding|code
+11:00|11:40|Chess|chess
+11:40|12:20|Rest and chores|rest
+12:20|13:00|Lunch and get ready|meal
+13:00|13:30|Travel to church|travel
+13:30|18:00|Church|church
+18:00|18:30|Travel home|travel
+18:30|19:00|Dinner|meal
+19:00|20:00|Film|film
+20:00|21:00|Free time|rest
+21:00|21:40|Evening devotion|dev
+21:40|22:00|Wind down|rest
+22:00|04:45|Sleep|sleep|Early night because Sunday starts at 4:45am`),
+        },
+        Sun: {
+          name: "Sunday",
+          tag: "Church 7am to 2pm",
+          rows: R(`
+04:45|05:00|Wake up and freshen up|rest
+05:00|05:30|Morning devotion|dev
+05:30|06:15|Get ready and breakfast|meal
+06:15|07:00|Travel to church|travel
+07:00|14:00|Church|church
+14:00|14:30|Travel home|travel
+14:30|15:10|Lunch|meal
+15:10|15:50|Chess|chess
+15:50|16:00|Short break|rest
+16:00|17:30|Reading|read|${REC}
+17:30|17:40|Short break|rest
+17:40|19:10|Coding|code
+19:10|19:40|Dinner|meal
+19:45|20:45|Film|film
+20:45|21:00|Plan Monday and pack your bag|rest
+21:00|21:40|Evening devotion|dev
+21:40|22:00|Wind down|rest
+22:00|04:45|Sleep|sleep`),
+        },
+      };
+      const FREE = {
+        name: "Whole day cancelled",
+        tag: "Use this if every class that day is cancelled",
+        rows: R(`
+06:00|06:30|Wake up and freshen up|rest
+06:30|07:10|Morning devotion|dev
+07:10|07:40|Breakfast|meal
+07:40|09:10|Reading 1 (morning)|read|${REC}
+09:10|09:20|Short break|rest
+09:20|10:50|Reading 2 (morning)|read|${REC}
+10:50|11:00|Short break|rest
+11:00|12:30|Coding 1|code
+12:30|13:10|Lunch|meal
+13:10|14:10|Reading 3 (afternoon)|read|${REC}
+14:10|14:20|Short break|rest
+14:20|15:50|Coding 2|code
+15:50|16:00|Short break|rest
+16:00|16:40|Chess|chess
+16:40|17:40|Coding 3|code
+17:40|18:30|Free time, bath and chores|rest
+18:30|19:00|Dinner|meal
+19:00|20:00|Evening reading|read|${REC}
+20:00|21:00|Film|film
+21:00|21:40|Evening devotion|dev
+21:40|22:30|Free time and wind down|rest
+22:30|06:00|Sleep|sleep`),
+      };
+      const SWAPS = [
+        {
+          day: "Tuesday",
+          items: [
+            [
+              "INS 203 cancelled (11:00 AM to 1:00 PM)",
+              "11:00 to 12:00 Reading with active recall, then 12:00 to 1:00 Coding.",
+            ],
+            [
+              "BUA 201 cancelled (2:00 PM to 4:00 PM)",
+              "2:00 to 3:30 Coding, then 3:30 to 4:00 Games (chess or puzzles).",
+            ],
+            [
+              "INS 205 cancelled (4:00 PM to 6:00 PM)",
+              "4:00 to 5:30 Reading with active recall, then 5:30 to 6:00 Games.",
+            ],
+          ],
+        },
+        {
+          day: "Thursday",
+          items: [
+            [
+              "SEN 203 / STA 121 cancelled (9:00 AM to 11:00 AM)",
+              "9:00 to 10:30 Coding, then 10:30 to 11:00 break. If only one of the two is cancelled, attend the other.",
+            ],
+            [
+              "COS 201 cancelled (4:00 PM to 6:00 PM)",
+              "4:00 to 5:00 Reading with active recall, then 5:00 to 6:00 Film.",
+            ],
+          ],
+        },
+        {
+          day: "Friday",
+          items: [
+            [
+              "ENT 211 cancelled (9:00 AM to 11:00 AM)",
+              "9:00 to 10:30 Coding, then 10:30 to 11:00 Games.",
+            ],
+            [
+              "INS 207 cancelled (1:00 PM to 2:30 PM)",
+              "1:00 to 2:00 Film, then 2:00 to 2:30 Games. Take lunch at 2:30 as normal.",
+            ],
+          ],
+        },
+      ];
+      const $ = (s) => document.querySelector(s);
+      const esc = (s) =>
+        String(s).replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
+      const mins = (t) => {
+        const [h, m] = t.split(":").map(Number);
+        return h * 60 + m;
+      };
+      const dur = (r) => {
+        let d = mins(r.e) - mins(r.s);
+        if (d <= 0) d += 1440;
+        return d;
+      };
+      const t12 = (t) => {
+        let [h, m] = t.split(":").map(Number);
+        const ap = h >= 12 ? "PM" : "AM";
+        h = h % 12 || 12;
+        return h + ":" + String(m).padStart(2, "0") + " " + ap;
+      };
+      const fmt = (m) => {
+        const h = Math.floor(m / 60),
+          r = m % 60;
+        return h ? (r ? `${h}h ${r}m` : `${h}h`) : `${r}m`;
+      };
+      const ORDER = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      const jsDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][
+        new Date().getDay()
+      ];
+      let tab = "normal",
+        day = jsDay;
+      function dayHTML(d) {
+        const tot = {};
+        d.rows.forEach((r) => {
+          tot[r.c] = (tot[r.c] || 0) + dur(r);
+        });
+        const chips = Object.keys(CAT)
+          .filter((k) => tot[k])
+          .map(
+            (k) =>
+              `<span class="chip" style="--c:var(--${CAT[k][1]})"><i></i>${CAT[k][0]} ${fmt(tot[k])}</span>`,
+          )
+          .join("");
+        const sleep = d.rows.find((r) => r.c === "sleep");
+        return `<div class="chips" aria-label="Totals for the day">${chips}</div><div class="rows">${d.rows.map((r) => `<div class="row cat-${r.c} ${dur(r) <= 15 ? "small" : ""}"><div class="tm">${t12(r.s)}<span>to ${t12(r.e)}</span></div><div class="lb">${esc(r.l)}${r.n ? `<small>${esc(r.n)}</small>` : ""}</div></div>`).join("")}</div>${sleep ? `<p class="sleepnote">Sleep: ${fmt(dur(sleep))}</p>` : ""}`;
+      }
+      function render() {
+        const pills = `<div class="days" role="tablist" aria-label="Day">${ORDER.map((k) => `<button class="dp ${k === day ? "on" : ""}" data-day="${k}" role="tab" aria-selected="${k === day}">${k}${k === jsDay ? '<span class="t">today</span>' : ""}</button>`).join("")}</div>`;
+        let body;
+        if (tab === "normal") {
+          const d = DAYS[day];
+          body =
+            pills +
+            `<h2>${d.name}</h2><p class="sub">${esc(d.tag)}</p>` +
+            dayHTML(d) +
+            `
+ <div class="card warn" style="margin-top:18px"><h3>Assumptions I made</h3><ul class="rules">
+ <li>Class days and weekends get 1h 30m of reading and 1h 30m of coding. You can change these.</li>
+ <li>Monday and Wednesday are very full, so I start them at 5:30 AM and end at 11:00 PM (6.5 hours of sleep). Monday's evening reading is only 15 minutes because church takes the evening.</li>
+ <li>Travel to church is 30 to 45 minutes. Walking between classes is 15 minutes.</li>
+ <li>You keep your 9:00 PM evening devotion on Sunday too. Only the morning time changes.</li>
+ <li>SEN 203 and STA 121 are both at 9:00 to 11:00 on Thursday. Please check with your course rep.</li></ul></div>`;
+        } else {
+          body =
+            `<h2>Just in case: a class is cancelled</h2><p class="lead">Find the class below and use the freed time. If a whole day is cancelled, switch to the full-day plan at the bottom.</p>
+ <div class="card"><h3>Simple rules</h3><ul class="rules"><li>Cancelled class: use the swap below. Keep everything else in the day the same.</li><li>Two or more classes cancelled in one day: follow the whole-day plan.</li><li>Not sure what to pick? Choose reading or coding first, then film or games.</li><li>Always finish reading blocks with active recall in NotebookLM.</li></ul></div>` +
+            SWAPS.map(
+              (s) =>
+                `<div class="card"><h3>${s.day}</h3><div class="swap">${s.items.map((i) => `<div class="it"><b>${esc(i[0])}</b><span class="arrow">Do this instead:</span> ${esc(i[1])}</div>`).join("")}</div></div>`,
+            ).join("") +
+            `<h2 style="margin-top:22px">${FREE.name}</h2><p class="sub">${FREE.tag}. Same plan as a no-class day without church.</p>` +
+            dayHTML(FREE);
+        }
+        $("#app").innerHTML =
+          `<div class="tabs" role="tablist"><button class="tab ${tab === "normal" ? "on" : ""}" data-tab="normal">Normal week</button><button class="tab ${tab === "jic" ? "on" : ""}" data-tab="jic">Just in case</button></div>` +
+          body;
+      }
+      document.addEventListener("click", (e) => {
+        const t = e.target.closest("[data-tab],[data-day]");
+        if (!t) return;
+        if (t.dataset.tab) {
+          tab = t.dataset.tab;
+        } else {
+          day = t.dataset.day;
+        }
+        render();
+        window.scrollTo(0, 0);
+      });
+      render();
+    </script>
+  </body>
+</html>
